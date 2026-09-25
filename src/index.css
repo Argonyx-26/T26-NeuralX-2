@@ -1,0 +1,144 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    background-color: #F8F5EE;
+    color: #2C2825;
+    font-family: 'Plus Jakarta Sans', Inter, sans-serif;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+}
+
+/* Ambient Technical Grid Pattern */
+.technical-grid {
+  background-image: radial-gradient(#D6CEBF 1px, transparent 1px);
+  background-size: 30px 30px;
+  opacity: 0.35;
+}
+
+/* Animated Fluid Mesh Gradient Blobs */
+@keyframes orbFloat1 {
+  0%, 100% { transform: translate(0px, 0px) scale(1) rotate(0deg); }
+  33% { transform: translate(45px, -35px) scale(1.08) rotate(45deg); }
+  66% { transform: translate(-30px, 25px) scale(0.95) rotate(-30deg); }
+}
+@keyframes orbFloat2 {
+  0%, 100% { transform: translate(0px, 0px) scale(1) rotate(0deg); }
+  33% { transform: translate(-50px, 40px) scale(1.12) rotate(-50deg); }
+  66% { transform: translate(35px, -20px) scale(0.92) rotate(35deg); }
+}
+@keyframes orbFloat3 {
+  0%, 100% { transform: translate(0px, 0px) scale(1); }
+  50% { transform: translate(60px, 40px) scale(1.15); }
+}
+@keyframes orbPulse {
+  0%, 100% { opacity: 0.45; }
+  50% { opacity: 0.72; }
+}
+
+.ambient-orb-1 {
+  animation: orbFloat1 22s ease-in-out infinite alternate;
+}
+.ambient-orb-2 {
+  animation: orbFloat2 26s ease-in-out infinite alternate;
+}
+.ambient-orb-3 {
+  animation: orbFloat3 18s ease-in-out infinite alternate, orbPulse 10s ease-in-out infinite;
+}
+
+/* Hyper-Refined Neo-Glassmorphism Styles */
+.neo-glass-card {
+  background: rgba(255, 255, 255, 0.46);
+  backdrop-filter: blur(32px) saturate(170%);
+  -webkit-backdrop-filter: blur(32px) saturate(170%);
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  box-shadow: 
+    inset 0 1px 2px 0 rgba(255, 255, 255, 0.95),
+    inset 0 -1.5px 2px 0 rgba(197, 168, 128, 0.12),
+    0 24px 50px -12px rgba(160, 140, 120, 0.14),
+    0 35px 70px -20px rgba(120, 100, 80, 0.08);
+  position: relative;
+}
+
+.neo-glass-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.3) 50%, rgba(217,119,87,0.15) 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.neo-glass-pill {
+  background: rgba(255, 255, 255, 0.58);
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.9),
+    0 8px 24px -6px rgba(180, 160, 140, 0.12);
+  transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.neo-glass-pill:hover {
+  background: rgba(255, 255, 255, 0.78);
+  transform: translateY(-1.5px);
+  box-shadow: 
+    inset 0 1px 1.5px 0 rgba(255, 255, 255, 1),
+    0 14px 28px -6px rgba(180, 160, 140, 0.18);
+}
+
+/* Gliding Glass Pill Container & Slider */
+.glass-nav-track {
+  background: rgba(244, 239, 230, 0.65);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow: inset 0 1px 3px rgba(180, 165, 150, 0.22);
+}
+
+.glass-glider {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  box-shadow: 
+    inset 0 1px 2px rgba(255, 255, 255, 1),
+    0 4px 14px rgba(140, 120, 100, 0.16),
+    0 1px 3px rgba(140, 120, 100, 0.08);
+  transition: all 0.36s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Soft Glows */
+.bronze-glow {
+  box-shadow: 0 10px 30px -6px rgba(217, 119, 87, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+}
+
+.specular-nav {
+  background: rgba(255, 255, 255, 0.52);
+  backdrop-filter: blur(30px) saturate(180%);
+  -webkit-backdrop-filter: blur(30px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 
+    inset 0 1px 1.5px 0 rgba(255, 255, 255, 0.95),
+    0 20px 45px -12px rgba(180, 160, 140, 0.16);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #F4EFE6;
+}
+::-webkit-scrollbar-thumb {
+  background: #D6CEBF;
+  border-radius: 9999px;
+}

@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23D97757' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10'/%3E%3Cpath d='m9 12 2 2 4-4'/%3E%3C/svg%3E" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SetuHealth — Early Health-Risk Detection & Decision Support</title>
+    <meta name="description" content="Intelligent Early Health-Risk Detection and Decision Support System. Active uncertainty handling, capacity routing, and closed-loop accountability." />
+    <!-- Google Fonts: Plus Jakarta Sans, Inter, JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Real Raah Observability Beacon (Sponsor Integration) -->
+    <!-- TODO: Replace data-pid and data-domain with real credentials from https://raah.dev/auth/sign-up -->
+    <script
+      defer
+      src="https://t.raah.dev/script.js"
+      data-pid="REPLACE_WITH_REAL_PROJECT_ID"
+      data-domain="REPLACE_WITH_DEPLOYED_DOMAIN"
+    ></script>
+  </head>
+
+  <body class="relative flex flex-col justify-between selection:bg-sand-300 selection:text-sand-900 overflow-x-hidden antialiased min-h-screen">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

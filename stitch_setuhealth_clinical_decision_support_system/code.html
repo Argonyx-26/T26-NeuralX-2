@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SetuHealth — Early Health-Risk Detection &amp; Decision Support</title>
+<!-- Tailwind CSS CDN with custom config -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts: Plus Jakarta Sans & Inter -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<!-- Lucide Icons -->
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'Inter', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            sand: {
+              50: '#FDFBF7',
+              100: '#F9F6F0',
+              200: '#F4EFE6',
+              300: '#E8DDD1',
+              400: '#D6CEBF',
+              500: '#C5A880',
+              600: '#8E8271',
+              700: '#5A5144',
+              800: '#3D362E',
+              900: '#2C2825',
+            },
+            terracotta: {
+              50: '#FDF7F5',
+              100: '#FAEEEA',
+              400: '#E2927C',
+              500: '#D97757',
+              600: '#C25D3D',
+            },
+            champagne: '#D4AF37'
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    body {
+      background-color: #F8F5EE;
+      color: #2C2825;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    /* Ambient Technical Grid Pattern */
+    .technical-grid {
+      background-image: radial-gradient(#D6CEBF 1px, transparent 1px);
+      background-size: 30px 30px;
+      opacity: 0.35;
+    }
+
+    /* Animated Fluid Mesh Gradient Blobs */
+    @keyframes orbFloat1 {
+      0%, 100% { transform: translate(0px, 0px) scale(1) rotate(0deg); }
+      33% { transform: translate(45px, -35px) scale(1.08) rotate(45deg); }
+      66% { transform: translate(-30px, 25px) scale(0.95) rotate(-30deg); }
+    }
+    @keyframes orbFloat2 {
+      0%, 100% { transform: translate(0px, 0px) scale(1) rotate(0deg); }
+      33% { transform: translate(-50px, 40px) scale(1.12) rotate(-50deg); }
+      66% { transform: translate(35px, -20px) scale(0.92) rotate(35deg); }
+    }
+    @keyframes orbFloat3 {
+      0%, 100% { transform: translate(0px, 0px) scale(1); }
+      50% { transform: translate(60px, 40px) scale(1.15); }
+    }
+    @keyframes orbPulse {
+      0%, 100% { opacity: 0.45; }
+      50% { opacity: 0.72; }
+    }
+
+    .ambient-orb-1 {
+      animation: orbFloat1 22s ease-in-out infinite alternate;
+    }
+    .ambient-orb-2 {
+      animation: orbFloat2 26s ease-in-out infinite alternate;
+    }
+    .ambient-orb-3 {
+      animation: orbFloat3 18s ease-in-out infinite alternate, orbPulse 10s ease-in-out infinite;
+    }
+
+    /* Hyper-Refined Neo-Glassmorphism Styles */
+    .neo-glass-card {
+      background: rgba(255, 255, 255, 0.46);
+      backdrop-filter: blur(32px) saturate(170%);
+      -webkit-backdrop-filter: blur(32px) saturate(170%);
+      border: 1px solid rgba(255, 255, 255, 0.75);
+      box-shadow: 
+        inset 0 1px 2px 0 rgba(255, 255, 255, 0.95),
+        inset 0 -1.5px 2px 0 rgba(197, 168, 128, 0.12),
+        0 24px 50px -12px rgba(160, 140, 120, 0.14),
+        0 35px 70px -20px rgba(120, 100, 80, 0.08);
+      position: relative;
+    }
+
+    .neo-glass-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      padding: 1px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.3) 50%, rgba(217,119,87,0.15) 100%);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    .neo-glass-pill {
+      background: rgba(255, 255, 255, 0.58);
+      backdrop-filter: blur(20px) saturate(150%);
+      -webkit-backdrop-filter: blur(20px) saturate(150%);
+      border: 1px solid rgba(255, 255, 255, 0.85);
+      box-shadow: 
+        inset 0 1px 1px 0 rgba(255, 255, 255, 0.9),
+        0 8px 24px -6px rgba(180, 160, 140, 0.12);
+      transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .neo-glass-pill:hover {
+      background: rgba(255, 255, 255, 0.78);
+      transform: translateY(-1.5px);
+      box-shadow: 
+        inset 0 1px 1.5px 0 rgba(255, 255, 255, 1),
+        0 14px 28px -6px rgba(180, 160, 140, 0.18);
+    }
+
+    /* Gliding Glass Pill Container & Slider */
+    .glass-nav-track {
+      background: rgba(244, 239, 230, 0.65);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(255, 255, 255, 0.85);
+      box-shadow: inset 0 1px 3px rgba(180, 165, 150, 0.22);
+    }
+
+    #glass-glider {
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.95);
+      box-shadow: 
+        inset 0 1px 2px rgba(255, 255, 255, 1),
+        0 4px 14px rgba(140, 120, 100, 0.16),
+        0 1px 3px rgba(140, 120, 100, 0.08);
+      transition: transform 0.42s cubic-bezier(0.22, 1, 0.36, 1), width 0.36s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    /* Soft Glows */
+    .bronze-glow {
+      box-shadow: 0 10px 30px -6px rgba(217, 119, 87, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+    }
+
+    .specular-nav {
+      background: rgba(255, 255, 255, 0.52);
+      backdrop-filter: blur(30px) saturate(180%);
+      -webkit-backdrop-filter: blur(30px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.85);
+      box-shadow: 
+        inset 0 1px 1.5px 0 rgba(255, 255, 255, 0.95),
+        0 20px 45px -12px rgba(180, 160, 140, 0.16);
+    }
+
+    /* Custom Transitions */
+    .fade-switch {
+      transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #F4EFE6;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #D6CEBF;
+      border-radius: 9999px;
+    }
+  </style>
+</head>
+<body class="relative flex flex-col justify-between selection:bg-sand-300 selection:text-sand-900 overflow-x-hidden antialiased">
+<!-- Ambient Dynamic Fluid Gradient Blobs (Neo-Glass Light Sources) -->
+<div class="fixed inset-0 pointer-events-none technical-grid z-0"></div>
+<!-- Orb 1: Warm Champagne Top Center -->
+<div class="ambient-orb-1 fixed top-[-140px] left-1/2 -translate-x-1/2 w-[780px] h-[520px] rounded-full bg-gradient-to-tr from-[#EADDCF]/75 via-[#F6ECE0]/85 to-[#E8D4C2]/60 blur-[120px] pointer-events-none z-0"></div>
+<!-- Orb 2: Soft Terracotta / Rose Gold Bottom Right -->
+<div class="ambient-orb-2 fixed bottom-[-180px] right-[-100px] w-[680px] h-[580px] rounded-full bg-gradient-to-tl from-[#E2927C]/28 via-[#F2D7C9]/45 to-[#F9EFE7]/30 blur-[130px] pointer-events-none z-0"></div>
+<!-- Orb 3: Subtle Warm Alabaster Peach Bottom Left -->
+<div class="ambient-orb-3 fixed top-[35%] left-[-180px] w-[540px] h-[540px] rounded-full bg-gradient-to-br from-[#EBDCCF]/40 via-[#F3E7DC]/60 to-transparent blur-[110px] pointer-events-none z-0"></div>
+<!-- Main Container -->
+<div class="relative z-10 flex-1 flex flex-col pb-16">
+<!-- Top Capsule Navigation with Gliding Pill -->
+<header class="w-full px-4 sm:px-6 pt-6">
+<nav class="max-w-5xl mx-auto px-5 sm:px-7 py-3 rounded-full specular-nav flex items-center justify-between transition-all duration-300">
+<!-- Brand -->
+<div class="flex items-center gap-3 cursor-pointer group" onclick="switchTab('triage')">
+<div class="w-9 h-9 rounded-full bg-sand-900 flex items-center justify-center text-sand-50 shadow-md relative overflow-hidden transition-transform duration-300 group-hover:scale-105">
+<i class="w-4 h-4 text-sand-200" data-lucide="shield-plus"></i>
+<span class="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></span>
+</div>
+<div class="flex items-center gap-2">
+<span class="font-semibold text-lg tracking-tight text-sand-900">Setu<span class="text-sand-600 font-light">Health</span></span>
+<span class="w-1.5 h-1.5 rounded-full bg-sand-500 ring-2 ring-sand-300/80"></span>
+</div>
+</div>
+<!-- Gliding Glass Pill Switcher -->
+<div class="relative flex items-center p-1 glass-nav-track rounded-full" id="nav-track">
+<!-- Active Gliding Indicator -->
+<div class="absolute top-1 bottom-1 rounded-full pointer-events-none z-0" id="glass-glider"></div>
+<!-- Tab 1 -->
+<button class="relative z-10 px-4 sm:px-5 py-1.5 rounded-full text-xs font-semibold tracking-wide transition-colors duration-200 text-sand-900" id="nav-btn-triage" onclick="switchTab('triage')">
+            Triage Intake
+          </button>
+<!-- Tab 2 -->
+<button class="relative z-10 px-4 sm:px-5 py-1.5 rounded-full text-xs font-medium tracking-wide transition-colors duration-200 text-sand-600 hover:text-sand-900" id="nav-btn-routing" onclick="switchTab('routing')">
+            Capacity Routing
+          </button>
+<!-- Tab 3 -->
+<button class="relative z-10 px-4 sm:px-5 py-1.5 rounded-full text-xs font-medium tracking-wide transition-colors duration-200 text-sand-600 hover:text-sand-900" id="nav-btn-accountability" onclick="switchTab('accountability')">
+            Accountability Log
+          </button>
+</div>
+<!-- Live Telemetry Status Pill -->
+<div class="hidden sm:flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-white/75 border border-white/90 shadow-sm text-[11px] font-medium text-sand-700 backdrop-blur-md">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+</span>
+<span class="tracking-wide">System Online</span>
+<span class="text-sand-400">|</span>
+<span class="text-sand-500 text-[10px] font-mono">District Mesh v4.2</span>
+</div>
+</nav>
+</header>
+<!-- CONTENT WRAPPER -->
+<main class="max-w-5xl mx-auto w-full px-4 sm:px-6 mt-8 sm:mt-10 flex-1">
+<!-- ========================================== -->
+<!-- VIEW 1: PATIENT TRIAGE (HERO FLOW)        -->
+<!-- ========================================== -->
+<section class="space-y-8 fade-switch" id="view-triage">
+<!-- Header Subtext -->
+<div class="text-center max-w-xl mx-auto space-y-2.5">
+<div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-sand-200/70 border border-sand-300/60 shadow-xs text-[10px] tracking-widest text-sand-700 uppercase font-semibold backdrop-blur-md">
+<i class="w-3.5 h-3.5 text-sand-500" data-lucide="sparkles"></i>
+            Clinical Decision Support · Model 99.4% Calibrated
+          </div>
+<h1 class="text-3xl sm:text-4xl font-semibold tracking-tight text-sand-900">
+            Early Risk Evaluation &amp; Triage
+          </h1>
+<p class="text-sm text-sand-600 font-light leading-relaxed">
+            Input presenting symptoms and patient telemetry to synthesize risk probability, trigger active uncertainty checks, and locate nearest capacity.
+          </p>
+</div>
+<!-- Central Floating Neo-Glass Canvas -->
+<div class="neo-glass-card rounded-[2.5rem] p-7 sm:p-10 space-y-8 transition-all">
+<!-- Sample Case Quick-Loader Chips -->
+<div class="flex flex-wrap items-center justify-between gap-4 pb-3 border-b border-sand-300/40">
+<span class="tracking-widest text-[11px] text-sand-600 uppercase font-medium flex items-center gap-1.5">
+<i class="w-3.5 h-3.5 text-sand-500" data-lucide="folder-clock"></i>
+              Preset Clinical Scenarios:
+            </span>
+<div class="flex flex-wrap items-center gap-2">
+<button class="neo-glass-pill px-3.5 py-1.5 rounded-full text-[11px] text-sand-800 font-medium transition-all shadow-xs flex items-center gap-1.5 active:scale-95" onclick="loadScenario('critical')">
+<span class="w-2 h-2 rounded-full bg-red-500 shadow-sm shadow-red-500/50"></span> High Risk Acute Chest Pain
+              </button>
+<button class="neo-glass-pill px-3.5 py-1.5 rounded-full text-[11px] text-sand-800 font-medium transition-all shadow-xs flex items-center gap-1.5 active:scale-95" onclick="loadScenario('ambiguous')">
+<span class="w-2 h-2 rounded-full bg-amber-500 shadow-sm shadow-amber-500/50"></span> Active Uncertainty (Escalation)
+              </button>
+<button class="neo-glass-pill px-3.5 py-1.5 rounded-full text-[11px] text-sand-800 font-medium transition-all shadow-xs flex items-center gap-1.5 active:scale-95" onclick="loadScenario('moderate')">
+<span class="w-2 h-2 rounded-full bg-emerald-500 shadow-sm shadow-emerald-500/50"></span> Moderate Pediatric Wheeze
+              </button>
+</div>
+</div>
+<!-- Chief Complaint Text Area -->
+<div class="space-y-3">
+<div class="flex items-center justify-between">
+<label class="tracking-widest text-[11px] text-sand-600 uppercase font-medium" for="chief-complaint">
+                Chief Complaint &amp; Contextual Anamnesis
+              </label>
+<span class="text-[11px] text-sand-500 font-mono" id="char-counter">167 chars</span>
+</div>
+<div class="relative group">
+<textarea class="w-full rounded-2xl bg-white/70 backdrop-blur-md border border-sand-300/80 focus:border-sand-500 focus:bg-white/90 focus:ring-4 focus:ring-sand-300/30 text-sand-900 placeholder:text-sand-400 p-4 text-sm leading-relaxed outline-none transition-all shadow-inner" id="chief-complaint" placeholder="Describe presenting symptoms, onset time, radiation pattern, patient age, and relevant pre-existing conditions..." rows="3">64yo male reporting sudden substernal chest pressure radiating down left shoulder and arm for 45 minutes, accompanied by cold diaphoresis and mild shortness of breath.</textarea>
+<div class="absolute bottom-3 right-3 flex items-center gap-2">
+<span class="px-2.5 py-1 rounded-md bg-sand-200/90 text-[10px] text-sand-700 uppercase tracking-wider font-semibold border border-sand-300/70 shadow-xs backdrop-blur-sm">Audio NLP Active</span>
+</div>
+</div>
+</div>
+<!-- Minimal Vitals Strip -->
+<div class="space-y-3">
+<div class="flex items-center justify-between">
+<span class="tracking-widest text-[11px] text-sand-600 uppercase font-medium">
+                Minimal Vitals &amp; Real-Time Biometrics
+              </span>
+<span class="text-[11px] text-sand-600 flex items-center gap-1 font-medium">
+<i class="w-3.5 h-3.5 text-emerald-600 animate-pulse" data-lucide="radio"></i> Telemetry Synced
+              </span>
+</div>
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+<!-- HR -->
+<div class="neo-glass-pill rounded-2xl p-4" id="vital-hr-card">
+<div class="flex items-center justify-between text-sand-600 text-xs mb-1">
+<span class="flex items-center gap-1.5"><i class="w-3.5 h-3.5 text-sand-500" data-lucide="activity"></i> Heart Rate</span>
+<span class="text-[10px] uppercase font-semibold text-terracotta-600 bg-terracotta-50/90 border border-terracotta-200/60 px-1.5 py-0.5 rounded-full" id="vital-hr-status">Elevated</span>
+</div>
+<div class="flex items-baseline gap-1 mt-1">
+<input class="text-2xl font-bold text-sand-900 bg-transparent w-20 outline-none border-b border-dashed border-sand-300 focus:border-sand-700 font-mono" id="vital-hr" type="number" value="118"/>
+<span class="text-xs text-sand-500 font-light">bpm</span>
+</div>
+<div class="text-[10px] text-sand-500 mt-2 font-light">Threshold: 60-100</div>
+</div>
+<!-- BP -->
+<div class="neo-glass-pill rounded-2xl p-4" id="vital-bp-card">
+<div class="flex items-center justify-between text-sand-600 text-xs mb-1">
+<span class="flex items-center gap-1.5"><i class="w-3.5 h-3.5 text-sand-500" data-lucide="heart"></i> Blood Pressure</span>
+<span class="text-[10px] uppercase font-semibold text-terracotta-600 bg-terracotta-50/90 border border-terracotta-200/60 px-1.5 py-0.5 rounded-full" id="vital-bp-status">Elevated</span>
+</div>
+<div class="flex items-baseline gap-1 mt-1">
+<input class="text-2xl font-bold text-sand-900 bg-transparent w-24 outline-none border-b border-dashed border-sand-300 focus:border-sand-700 font-mono" id="vital-bp" type="text" value="158/98"/>
+<span class="text-xs text-sand-500 font-light">mmHg</span>
+</div>
+<div class="text-[10px] text-sand-500 mt-2 font-light">Target: &lt;120/80</div>
+</div>
+<!-- SpO2 -->
+<div class="neo-glass-pill rounded-2xl p-4" id="vital-spo2-card">
+<div class="flex items-center justify-between text-sand-600 text-xs mb-1">
+<span class="flex items-center gap-1.5"><i class="w-3.5 h-3.5 text-sand-500" data-lucide="wind"></i> SpO₂</span>
+<span class="text-[10px] uppercase font-semibold text-terracotta-600 bg-terracotta-50/90 border border-terracotta-200/60 px-1.5 py-0.5 rounded-full" id="vital-spo2-status">Hypoxic</span>
+</div>
+<div class="flex items-baseline gap-1 mt-1">
+<input class="text-2xl font-bold text-sand-900 bg-transparent w-20 outline-none border-b border-dashed border-sand-300 focus:border-sand-700 font-mono" id="vital-spo2" type="number" value="92"/>
+<span class="text-xs text-sand-500 font-light">%</span>
+</div>
+<div class="text-[10px] text-sand-500 mt-2 font-light">Critical: &lt;94%</div>
+</div>
+<!-- Temperature -->
+<div class="neo-glass-pill rounded-2xl p-4" id="vital-temp-card">
+<div class="flex items-center justify-between text-sand-600 text-xs mb-1">
+<span class="flex items-center gap-1.5"><i class="w-3.5 h-3.5 text-sand-500" data-lucide="thermometer"></i> Body Temp</span>
+<span class="text-[10px] uppercase font-semibold text-emerald-600 bg-emerald-50/90 border border-emerald-200/60 px-1.5 py-0.5 rounded-full" id="vital-temp-status">Norm</span>
+</div>
+<div class="flex items-baseline gap-1 mt-1">
+<input class="text-2xl font-bold text-sand-900 bg-transparent w-20 outline-none border-b border-dashed border-sand-300 focus:border-sand-700 font-mono" id="vital-temp" step="0.1" type="number" value="98.6"/>
+<span class="text-xs text-sand-500 font-light">°F</span>
+</div>
+<div class="text-[10px] text-sand-500 mt-2 font-light">Febrile: &gt;100.4</div>
+</div>
+</div>
+</div>
+<!-- Bottom Action Row -->
+<div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-sand-300/40">
+<div class="flex items-center gap-3 text-xs text-sand-600">
+<span class="flex items-center gap-1.5"><i class="w-3.5 h-3.5 text-sand-500" data-lucide="lock"></i> HIPAA/HL7 Compliant</span>
+<span>•</span>
+<span class="font-mono text-[11px]">Differential Entropy Weight: 0.14</span>
+</div>
+<!-- CTA Button with Rich Specular Sheen -->
+<button class="w-full sm:w-auto px-8 py-3.5 rounded-full bg-gradient-to-r from-sand-900 via-sand-800 to-sand-900 text-white font-medium text-sm tracking-wide shadow-lg hover:shadow-2xl hover:translate-y-[-1px] active:translate-y-[0px] transition-all flex items-center justify-center gap-2.5 bronze-glow group" id="btn-eval" onclick="evaluateTriage()">
+<i class="w-4 h-4 text-terracotta-400 group-hover:rotate-45 transition-transform duration-300" data-lucide="cpu"></i>
+<span>Evaluate Triage &amp; Capacity</span>
+<i class="w-4 h-4 ml-1 opacity-70 group-hover:translate-x-1 transition-transform" data-lucide="arrow-right"></i>
+</button>
+</div>
+</div>
+</section>
+<!-- ========================================== -->
+<!-- VIEW 2: CAPACITY-AWARE REFERRAL OUTPUT    -->
+<!-- ========================================== -->
+<section class="space-y-6 hidden fade-switch" id="view-routing">
+<!-- Header Info -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2">
+<div>
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sand-200/80 text-[10px] tracking-widest text-sand-700 uppercase font-semibold border border-sand-300/50 backdrop-blur-md">
+<i class="w-3 h-3 text-terracotta-500" data-lucide="activity"></i> Live Evaluation Result
+            </div>
+<h2 class="text-2xl font-semibold text-sand-900 mt-1">Capacity-Matched Decision Output</h2>
+</div>
+<div class="flex items-center gap-3">
+<button class="px-4 py-2 rounded-full neo-glass-pill text-xs font-medium text-sand-700 hover:text-sand-900 flex items-center gap-1.5 transition-all" onclick="switchTab('triage')">
+<i class="w-3.5 h-3.5" data-lucide="refresh-cw"></i> Re-evaluate Intake
+            </button>
+<button class="px-5 py-2 rounded-full bg-sand-900 text-white text-xs font-medium hover:bg-sand-800 shadow-md flex items-center gap-1.5 transition-all bronze-glow" onclick="triggerDispatch()">
+<i class="w-3.5 h-3.5 text-terracotta-400" data-lucide="send"></i> Dispatch Referral
+            </button>
+</div>
+</div>
+<!-- 2-Column Minimal Neo-Glass Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+<!-- Left Column: Risk Tier + SHAP Explainability + Confidence Gauge -->
+<div class="lg:col-span-7 neo-glass-card rounded-[2.3rem] p-7 space-y-6 flex flex-col justify-between">
+<div class="space-y-5">
+<!-- Tier & Confidence Header -->
+<div class="flex items-center justify-between flex-wrap gap-4 border-b border-sand-300/40 pb-4">
+<div>
+<span class="tracking-widest text-[10px] text-sand-600 uppercase font-semibold">Risk Classification</span>
+<div class="flex items-center gap-3 mt-1.5">
+<span class="px-4 py-1.5 rounded-full text-xs font-semibold tracking-wider uppercase bg-red-100/90 text-red-700 border border-red-200/80 shadow-xs flex items-center gap-1.5 backdrop-blur-md" id="res-risk-tier-pill">
+<span class="w-2 h-2 rounded-full bg-red-600 animate-pulse"></span>
+                      CRITICAL RISK (TIER 1)
+                    </span>
+<span class="text-xs text-sand-600 font-mono">Code: STEMI / ACS Protocol</span>
+</div>
+</div>
+<!-- Confidence Dial Glass Pod -->
+<div class="flex items-center gap-3 bg-white/70 px-4 py-2.5 rounded-2xl border border-white/90 shadow-sm backdrop-blur-md">
+<div class="relative w-10 h-10 flex items-center justify-center">
+<svg class="w-10 h-10 transform -rotate-90" viewbox="0 0 36 36">
+<path class="text-sand-200" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3.5"></path>
+<path class="text-sand-900 transition-all duration-700" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" id="confidence-circle" stroke="currentColor" stroke-dasharray="94, 100" stroke-linecap="round" stroke-width="3.5"></path>
+</svg>
+<span class="absolute text-[11px] font-bold text-sand-900 font-mono" id="confidence-num">94%</span>
+</div>
+<div>
+<div class="text-[10px] uppercase font-semibold text-sand-500 tracking-wider">Bayesian Confidence</div>
+<div class="text-xs font-medium text-sand-800">High Statistical Margin</div>
+</div>
+</div>
+</div>
+<!-- SHAP Attribution Factors -->
+<div class="space-y-3">
+<span class="tracking-widest text-[11px] text-sand-600 uppercase font-medium flex items-center justify-between">
+<span>Contributing Risk Drivers (SHAP Attribution)</span>
+<span class="text-[10px] text-sand-500 font-normal">Ranked by weight</span>
+</span>
+<div class="space-y-2.5" id="factors-container">
+<!-- Factor 1 -->
+<div class="p-3.5 rounded-2xl bg-white/60 border border-white/90 shadow-xs flex items-start justify-between gap-3 backdrop-blur-sm">
+<div class="flex items-start gap-2.5">
+<span class="p-1 rounded-md bg-terracotta-100 text-terracotta-700 text-xs font-semibold mt-0.5">+42%</span>
+<div>
+<div class="text-xs font-semibold text-sand-900">Substernal chest compression with left arm radiation</div>
+<div class="text-[11px] text-sand-600">High correlation with acute coronary obstruction vs musculoskeletal origin</div>
+</div>
+</div>
+<span class="text-[10px] text-sand-500 font-mono">w:0.428</span>
+</div>
+<!-- Factor 2 -->
+<div class="p-3.5 rounded-2xl bg-white/60 border border-white/90 shadow-xs flex items-start justify-between gap-3 backdrop-blur-sm">
+<div class="flex items-start gap-2.5">
+<span class="p-1 rounded-md bg-terracotta-100 text-terracotta-700 text-xs font-semibold mt-0.5">+26%</span>
+<div>
+<div class="text-xs font-semibold text-sand-900">Severe diaphoresis &amp; borderline hypoxemia (SpO₂ 92%)</div>
+<div class="text-[11px] text-sand-600">Early hemodynamic compromise sign under physiological stress</div>
+</div>
+</div>
+<span class="text-[10px] text-sand-500 font-mono">w:0.264</span>
+</div>
+<!-- Factor 3 -->
+<div class="p-3.5 rounded-2xl bg-white/60 border border-white/90 shadow-xs flex items-start justify-between gap-3 backdrop-blur-sm">
+<div class="flex items-start gap-2.5">
+<span class="p-1 rounded-md bg-sand-200 text-sand-800 text-xs font-semibold mt-0.5">+14%</span>
+<div>
+<div class="text-xs font-semibold text-sand-900">Tachycardia (118 bpm) + Hypertensive urgency stage</div>
+<div class="text-[11px] text-sand-600">Elevated myocardial oxygen demand in elderly cohort</div>
+</div>
+</div>
+<span class="text-[10px] text-sand-500 font-mono">w:0.141</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Guideline Reference Note -->
+<div class="pt-4 border-t border-sand-300/40 text-[11px] text-sand-600 flex items-center justify-between">
+<span class="flex items-center gap-1.5"><i class="w-3.5 h-3.5 text-emerald-600" data-lucide="check-check"></i> AHA/ACC Emergency Triage Guideline Matched</span>
+<span class="font-mono text-sand-500">ID: SH-8820-ACS</span>
+</div>
+</div>
+<!-- Right Column: Capacity-Matched Facility -->
+<div class="lg:col-span-5 neo-glass-card rounded-[2.3rem] p-7 space-y-6 flex flex-col justify-between border-l-4 border-sand-500/80">
+<div class="space-y-5">
+<!-- Simulation Banner Pill -->
+<div class="flex items-center justify-between">
+<span class="px-3 py-1 rounded-full bg-sand-200/80 border border-sand-300/80 text-[10px] tracking-wider text-sand-800 font-mono font-semibold backdrop-blur-md">
+                  [SIMULATED DISTRICT CAPACITY DATA]
+                </span>
+<span class="text-[11px] text-emerald-700 font-medium flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Live Telemetry
+                </span>
+</div>
+<!-- Hospital Title & Key ETA -->
+<div>
+<span class="tracking-widest text-[10px] text-sand-500 uppercase font-semibold">Recommended Regional Node</span>
+<h3 class="text-xl font-bold text-sand-900 mt-1" id="facility-name">Metro Heart &amp; Vascular Institute</h3>
+<p class="text-xs text-sand-600 mt-0.5" id="facility-address">District Center North Campus · 6.4 km away</p>
+</div>
+<!-- ETA & Bed Gauge Pod -->
+<div class="grid grid-cols-2 gap-3">
+<!-- Travel ETA -->
+<div class="p-4 rounded-2xl neo-glass-pill shadow-xs">
+<div class="text-[10px] uppercase font-semibold text-sand-500 flex items-center gap-1">
+<i class="w-3 h-3 text-sand-600" data-lucide="navigation"></i> Ambulance ETA
+                  </div>
+<div class="text-2xl font-bold text-sand-900 mt-1 flex items-baseline gap-1 font-mono">
+<span id="facility-eta">11</span>
+<span class="text-xs font-light text-sand-500">mins</span>
+</div>
+<div class="text-[10px] text-emerald-600 font-medium mt-1 flex items-center gap-1">
+<i class="w-3 h-3" data-lucide="shield-check"></i> Low traffic corridor
+                  </div>
+</div>
+<!-- ICU Beds -->
+<div class="p-4 rounded-2xl neo-glass-pill shadow-xs">
+<div class="text-[10px] uppercase font-semibold text-sand-500 flex items-center gap-1">
+<i class="w-3 h-3 text-sand-600" data-lucide="bed"></i> Available ICU
+                  </div>
+<div class="text-2xl font-bold text-sand-900 mt-1 flex items-baseline gap-1 font-mono">
+<span id="facility-icu">4</span>
+<span class="text-xs font-light text-sand-500">beds</span>
+</div>
+<div class="text-[10px] text-emerald-600 font-medium mt-1">Cath Lab Team Ready</div>
+</div>
+</div>
+<!-- Specialist on Duty Card -->
+<div class="p-4 rounded-2xl bg-white/75 border border-white/95 flex items-center justify-between shadow-xs backdrop-blur-md">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-sand-200 border border-sand-300 flex items-center justify-center text-sand-700 font-bold text-xs shadow-inner">
+                    Dr
+                  </div>
+<div>
+<div class="text-[10px] uppercase text-sand-500 font-semibold">Specialist on Duty</div>
+<div class="text-xs font-bold text-sand-900" id="facility-specialist">Dr. Sunita Raman (Interventional Cardio)</div>
+</div>
+</div>
+<span class="px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200/60 text-emerald-700 text-[10px] font-semibold">Verified</span>
+</div>
+<!-- Secondary Alternate Routing Option -->
+<div class="p-3.5 rounded-2xl bg-sand-100/70 border border-dashed border-sand-300 text-xs space-y-1 backdrop-blur-sm">
+<div class="flex items-center justify-between text-sand-700 font-medium">
+<span>Fallback Facility: Apex General</span>
+<span class="text-sand-500 font-mono text-[11px]">18 mins · 1 ICU</span>
+</div>
+<p class="text-[11px] text-sand-500 font-light">Route automatically holds primary cath lab slot for 25 minutes upon transit lock.</p>
+</div>
+</div>
+<!-- Booking Confirmation trigger -->
+<button class="w-full py-3.5 rounded-full bg-sand-900 hover:bg-sand-800 text-white text-xs font-medium tracking-wide shadow-md transition-all flex items-center justify-center gap-2 bronze-glow" onclick="confirmTransitReservation()">
+<i class="w-4 h-4 text-emerald-400" data-lucide="check-circle-2"></i>
+<span>Lock Pre-Arrival Bed Reservation</span>
+</button>
+</div>
+</div>
+</section>
+<!-- ========================================== -->
+<!-- VIEW 3: CLOSED-LOOP ACCOUNTABILITY LOG    -->
+<!-- ========================================== -->
+<section class="space-y-6 hidden fade-switch" id="view-accountability">
+<!-- Header -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2">
+<div>
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sand-200/80 text-[10px] tracking-widest text-sand-700 uppercase font-semibold border border-sand-300/50 backdrop-blur-md">
+<i class="w-3 h-3 text-sand-500" data-lucide="git-merge"></i> Post-Referral Verification Mesh
+            </div>
+<h2 class="text-2xl font-semibold text-sand-900 mt-1">Closed-Loop Accountability Dashboard</h2>
+</div>
+<div class="flex items-center gap-2 text-xs text-sand-600 bg-white/70 px-3.5 py-1.5 rounded-full border border-white/90 backdrop-blur-md">
+<i class="w-3.5 h-3.5 text-sand-500" data-lucide="clock"></i>
+<span>Aggregated over last 30 operational days</span>
+</div>
+</div>
+<!-- 3 Clean Glass Stat Pods -->
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+<!-- Stat 1 -->
+<div class="neo-glass-card rounded-3xl p-6 relative overflow-hidden group">
+<div class="flex items-center justify-between text-sand-600 mb-2">
+<span class="tracking-widest text-[11px] text-sand-600 uppercase font-medium">Referrals Sent</span>
+<div class="w-8 h-8 rounded-full bg-sand-200/80 flex items-center justify-center text-sand-700 shadow-xs">
+<i class="w-4 h-4" data-lucide="send"></i>
+</div>
+</div>
+<div class="text-3xl font-bold text-sand-900 font-mono">1,482</div>
+<div class="text-xs text-emerald-600 font-medium mt-2 flex items-center gap-1">
+<i class="w-3.5 h-3.5" data-lucide="trending-up"></i> +8.4% intake efficiency
+            </div>
+<div class="text-[10px] text-sand-500 mt-1">Across 14 participating district clinics</div>
+</div>
+<!-- Stat 2 -->
+<div class="neo-glass-card rounded-3xl p-6 relative overflow-hidden group">
+<div class="flex items-center justify-between text-sand-600 mb-2">
+<span class="tracking-widest text-[11px] text-sand-600 uppercase font-medium">Care Confirmed</span>
+<div class="w-8 h-8 rounded-full bg-emerald-100/90 flex items-center justify-center text-emerald-700 shadow-xs">
+<i class="w-4 h-4" data-lucide="check"></i>
+</div>
+</div>
+<div class="text-3xl font-bold text-sand-900 font-mono">1,438</div>
+<div class="text-xs text-emerald-600 font-medium mt-2 flex items-center gap-1">
+<i class="w-3.5 h-3.5" data-lucide="shield-check"></i> 97.03% successful completion
+            </div>
+<div class="text-[10px] text-sand-500 mt-1">Confirmed clinical arrival within 45 mins</div>
+</div>
+<!-- Stat 3 -->
+<div class="neo-glass-card rounded-3xl p-6 relative overflow-hidden group">
+<div class="flex items-center justify-between text-sand-600 mb-2">
+<span class="tracking-widest text-[11px] text-sand-600 uppercase font-medium">Lost-to-Follow-up</span>
+<div class="w-8 h-8 rounded-full bg-terracotta-100/90 flex items-center justify-center text-terracotta-600 shadow-xs">
+<i class="w-4 h-4" data-lucide="alert-triangle"></i>
+</div>
+</div>
+<div class="text-3xl font-bold text-sand-900 font-mono">44</div>
+<div class="text-xs text-terracotta-600 font-medium mt-2 flex items-center gap-1">
+<i class="w-3.5 h-3.5" data-lucide="phone-call"></i> 2.97% community CHW dispatched
+            </div>
+<div class="text-[10px] text-sand-500 mt-1">Proactive health worker home check auto-queued</div>
+</div>
+</div>
+<!-- Muted Glass Visual Chart Container -->
+<div class="neo-glass-card rounded-[2.3rem] p-7 space-y-4">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-sand-300/40 pb-3">
+<div>
+<span class="tracking-widest text-[11px] text-sand-600 uppercase font-medium">Outcome Distribution &amp; Calibrated Concordance</span>
+<h4 class="text-sm font-semibold text-sand-900">30-Day Referral Trajectory &amp; Adherence Ratio</h4>
+</div>
+<div class="flex items-center gap-4 text-xs">
+<span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#5A5144]"></span> Critical Care Confirmed</span>
+<span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#C5A880]"></span> Outpatient Managed</span>
+<span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#D97757]"></span> Misclassification Recalibrated</span>
+</div>
+</div>
+<!-- Muted Sand/Terracotta SVG Area Chart with Glass Backdrop -->
+<div class="w-full h-56 relative pt-4">
+<svg class="w-full h-full overflow-visible" preserveaspectratio="none" viewbox="0 0 800 180">
+<defs>
+<lineargradient id="gradConfirmed" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#C5A880" stop-opacity="0.45"></stop>
+<stop offset="100%" stop-color="#C5A880" stop-opacity="0.02"></stop>
+</lineargradient>
+<lineargradient id="gradCritical" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#5A5144" stop-opacity="0.3"></stop>
+<stop offset="100%" stop-color="#5A5144" stop-opacity="0.0"></stop>
+</lineargradient>
+</defs>
+<!-- Subtle horizontal grid lines -->
+<line stroke="#E8DDD1" stroke-dasharray="3 3" x1="0" x2="800" y1="30" y2="30"></line>
+<line stroke="#E8DDD1" stroke-dasharray="3 3" x1="0" x2="800" y1="80" y2="80"></line>
+<line stroke="#E8DDD1" stroke-dasharray="3 3" x1="0" x2="800" y1="130" y2="130"></line>
+<!-- Outpatient Area -->
+<path d="M0,130 C120,110 240,120 360,95 C480,70 600,85 720,60 L800,50 L800,170 L0,170 Z" fill="url(#gradConfirmed)"></path>
+<path d="M0,130 C120,110 240,120 360,95 C480,70 600,85 720,60 L800,50" fill="none" stroke="#C5A880" stroke-width="2.5"></path>
+<!-- Critical Inpatient Area -->
+<path d="M0,150 C120,140 240,135 360,120 C480,110 600,125 720,105 L800,98 L800,170 L0,170 Z" fill="url(#gradCritical)"></path>
+<path d="M0,150 C120,140 240,135 360,120 C480,110 600,125 720,105 L800,98" fill="none" stroke="#5A5144" stroke-width="2"></path>
+<!-- Recalibrated Mismatch Line (Terracotta) -->
+<path d="M0,165 C120,162 240,158 360,155 C480,157 600,152 720,148 L800,145" fill="none" stroke="#D97757" stroke-dasharray="4 2" stroke-width="2"></path>
+<!-- Data markers with specular ring -->
+<circle cx="360" cy="95" fill="#C5A880" r="4.5" stroke="#fff" stroke-width="2"></circle>
+<circle cx="720" cy="60" fill="#C5A880" r="4.5" stroke="#fff" stroke-width="2"></circle>
+<circle cx="800" cy="98" fill="#5A5144" r="4.5" stroke="#fff" stroke-width="2"></circle>
+</svg>
+<div class="flex justify-between text-[11px] text-sand-500 pt-2 font-mono">
+<span>Week 1 (Oct)</span>
+<span>Week 2</span>
+<span>Week 3</span>
+<span>Week 4 (Current)</span>
+</div>
+</div>
+</div>
+<!-- Outcome Mismatch Log (Neo-Glass Table) -->
+<div class="neo-glass-card rounded-[2.3rem] p-7 space-y-4">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-sand-300/40 pb-3">
+<div>
+<span class="tracking-widest text-[11px] text-sand-600 uppercase font-medium">Continual Recalibration Loop</span>
+<h4 class="text-sm font-semibold text-sand-900">Outcome Mismatch &amp; Weight Adjustment Audit</h4>
+</div>
+<span class="text-xs text-sand-700 bg-white/80 px-3.5 py-1 rounded-full border border-sand-300/70 shadow-xs backdrop-blur-md">
+              Auto-tuning enabled · Active Learning Mesh
+            </span>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left text-xs">
+<thead>
+<tr class="border-b border-sand-300/50 text-[10px] uppercase tracking-wider text-sand-600">
+<th class="py-2.5 font-semibold">Case Reference</th>
+<th class="py-2.5 font-semibold">Triage Prediction</th>
+<th class="py-2.5 font-semibold">Discharge Diagnosis</th>
+<th class="py-2.5 font-semibold">Concordance Drift</th>
+<th class="py-2.5 font-semibold">Rule Weight Recalibration</th>
+<th class="py-2.5 font-semibold text-right">Status</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-sand-200/60 font-light">
+<!-- Row 1 -->
+<tr class="hover:bg-white/50 transition-colors">
+<td class="py-3 font-mono font-medium text-sand-900">#CS-9912</td>
+<td class="py-3"><span class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 text-[10px] font-semibold border border-amber-200">MEDIUM RISK</span></td>
+<td class="py-3 text-sand-800 font-medium">Biliary Colic (No Pancreatitis)</td>
+<td class="py-3 text-emerald-700 font-mono">Sub-acute (+0.08)</td>
+<td class="py-3 text-sand-600">Right upper-quadrant tenderness weight dampened by 4.2%</td>
+<td class="py-3 text-right"><span class="px-2 py-0.5 rounded-full bg-sand-200 text-sand-700 text-[10px]">Tuned</span></td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-white/50 transition-colors">
+<td class="py-3 font-mono font-medium text-sand-900">#CS-9884</td>
+<td class="py-3"><span class="px-2 py-0.5 rounded-full bg-red-100 text-red-800 text-[10px] font-semibold border border-red-200">CRITICAL</span></td>
+<td class="py-3 text-sand-800 font-medium">Severe Panic Attack / Hyperventilation</td>
+<td class="py-3 text-terracotta-600 font-mono">Over-triage (-0.31)</td>
+<td class="py-3 text-sand-600">Added tingling extremity cross-filter to reduce false STEMI tags</td>
+<td class="py-3 text-right"><span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px]">Supervised</span></td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-white/50 transition-colors">
+<td class="py-3 font-mono font-medium text-sand-900">#CS-9740</td>
+<td class="py-3"><span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-semibold border border-emerald-200">LOW RISK</span></td>
+<td class="py-3 text-sand-800 font-medium">Atypical Appendicitis (Retrocecal)</td>
+<td class="py-3 text-terracotta-600 font-mono">Under-triage (+0.44)</td>
+<td class="py-3 text-sand-600">Heightened rebound tenderness penalty for pediatric ages 9-16</td>
+<td class="py-3 text-right"><span class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 text-[10px]">Re-weighted</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer Note -->
+<footer class="max-w-5xl mx-auto w-full px-6 pt-10 text-center text-xs text-sand-500 font-light flex flex-col sm:flex-row items-center justify-between gap-3">
+<div class="flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-sand-400"></span>
+<span>SetuHealth Decision Architecture · Clinical Lead Safeguard Protocol</span>
+</div>
+<div>Designed with Warm Alabaster Glass &amp; Brushed Champagne Metallurgy</div>
+</footer>
+</div>
+<!-- ========================================== -->
+<!-- MODAL: ACTIVE UNCERTAINTY & HUMAN ESCALATION -->
+<!-- ========================================== -->
+<div class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden" id="modal-uncertainty">
+<!-- Backdrop with deep frosted blur -->
+<div class="absolute inset-0 bg-[#2C2825]/30 backdrop-blur-lg transition-opacity duration-300" onclick="closeModal()"></div>
+<!-- Modal Card (Warm Neo-Glass) -->
+<div class="relative z-10 w-full max-w-xl neo-glass-card rounded-[2.5rem] p-8 sm:p-9 shadow-2xl space-y-6 transform transition-all duration-300">
+<!-- Modal Header -->
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-3.5">
+<div class="w-11 h-11 rounded-2xl bg-amber-100/90 text-amber-800 flex items-center justify-center border border-amber-300/50 shadow-sm">
+<i class="w-5 h-5" data-lucide="help-circle"></i>
+</div>
+<div>
+<span class="tracking-widest text-[10px] text-amber-800 uppercase font-semibold">Active Uncertainty Check</span>
+<h3 class="text-lg font-bold text-sand-900">Clarification Needed for Safe Triage</h3>
+</div>
+</div>
+<button class="w-8 h-8 rounded-full bg-white/70 hover:bg-white text-sand-600 flex items-center justify-center border border-sand-300/60 shadow-xs transition-all" onclick="closeModal()">
+<i class="w-4 h-4" data-lucide="x"></i>
+</button>
+</div>
+<p class="text-xs text-sand-600 leading-relaxed font-light">
+        The predictive engine detected high differential ambiguity between benign thoracic spasm and unstable myocardial ischemia. Please clarify the following parameters:
+      </p>
+<!-- Clarifying Questions -->
+<div class="space-y-4">
+<!-- Question 1 -->
+<div class="p-4 rounded-2xl bg-white/70 border border-white/90 shadow-xs space-y-2.5 backdrop-blur-md">
+<div class="text-xs font-semibold text-sand-800 flex items-center gap-2">
+<span class="w-5 h-5 rounded-full bg-sand-200 text-sand-700 text-[10px] flex items-center justify-center font-bold">1</span>
+            Does the chest discomfort change with deep inspiration or body position?
+          </div>
+<div class="grid grid-cols-2 gap-2">
+<button class="clarify-pill-1 px-4 py-2.5 rounded-xl bg-white text-xs text-sand-700 font-medium border border-sand-300/80 hover:border-sand-600 transition-all text-left shadow-xs" onclick="selectClarification(this, 1)">
+              Yes — sharpens with breath (Pleuritic)
+            </button>
+<button class="clarify-pill-1 px-4 py-2.5 rounded-xl bg-white text-xs text-sand-700 font-medium border border-sand-300/80 hover:border-sand-600 transition-all text-left shadow-xs" onclick="selectClarification(this, 1)">
+              No — constant crushing pressure
+            </button>
+</div>
+</div>
+<!-- Question 2 -->
+<div class="p-4 rounded-2xl bg-white/70 border border-white/90 shadow-xs space-y-2.5 backdrop-blur-md">
+<div class="text-xs font-semibold text-sand-800 flex items-center gap-2">
+<span class="w-5 h-5 rounded-full bg-sand-200 text-sand-700 text-[10px] flex items-center justify-center font-bold">2</span>
+            Any prior history of cardiac stents or peripheral vascular disease?
+          </div>
+<div class="grid grid-cols-2 gap-2">
+<button class="clarify-pill-2 px-4 py-2.5 rounded-xl bg-white text-xs text-sand-700 font-medium border border-sand-300/80 hover:border-sand-600 transition-all text-left shadow-xs" onclick="selectClarification(this, 2)">
+              Yes, documented PCI / Stent
+            </button>
+<button class="clarify-pill-2 px-4 py-2.5 rounded-xl bg-white text-xs text-sand-700 font-medium border border-sand-300/80 hover:border-sand-600 transition-all text-left shadow-xs" onclick="selectClarification(this, 2)">
+              None / Unknown
+            </button>
+</div>
+</div>
+</div>
+<!-- Explicit Human Review Fallback Card -->
+<div class="p-4 rounded-2xl bg-sand-100/90 border border-[#C5A880]/50 space-y-1.5 backdrop-blur-sm">
+<div class="flex items-center gap-2 text-sand-900 font-semibold text-xs">
+<i class="w-4 h-4 text-terracotta-500" data-lucide="shield-alert"></i>
+<span>Uncertainty Threshold Reached — Directing to Clinical Lead</span>
+</div>
+<p class="text-[11px] text-sand-600 font-light leading-relaxed">
+          Deliberate safety posture: When diagnostic confidence remains below 80% with atypical telemetry, automated routing halts to prevent algorithmic hallucination.
+        </p>
+</div>
+<!-- Action Footer -->
+<div class="flex items-center justify-between gap-3 pt-2">
+<button class="px-5 py-2.5 rounded-full bg-white/90 hover:bg-white text-sand-800 border border-sand-300/80 text-xs font-medium transition-all flex items-center gap-1.5 shadow-xs" onclick="escalateToHumanLead()">
+<i class="w-3.5 h-3.5 text-sand-600" data-lucide="user-check"></i> Handover to Clinical Lead
+        </button>
+<button class="px-6 py-2.5 rounded-full bg-sand-900 hover:bg-sand-800 text-white text-xs font-medium shadow-md transition-all flex items-center gap-1.5 bronze-glow" onclick="submitClarifications()">
+<span>Apply Clarification &amp; Route</span>
+<i class="w-3.5 h-3.5" data-lucide="arrow-right"></i>
+</button>
+</div>
+</div>
+</div>
+<!-- Notification Toast with Neo-Glass Sheen -->
+<div class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 neo-glass-card px-5 py-3.5 rounded-2xl shadow-2xl flex items-center gap-3" id="toast">
+<div class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs shadow-xs" id="toast-icon">
+<i class="w-3.5 h-3.5" data-lucide="check"></i>
+</div>
+<div class="text-xs font-medium text-sand-900" id="toast-message">Referral successfully logged!</div>
+</div>
+<!-- Application Logic -->
+<script>
+    // Initialize icons
+    lucide.createIcons();
+
+    // Mock Scenarios Data
+    const SCENARIOS = {
+      critical: {
+        text: "64yo male reporting sudden substernal chest pressure radiating down left shoulder and arm for 45 minutes, accompanied by cold diaphoresis and mild shortness of breath.",
+        vitals: { hr: 118, bp: "158/98", spo2: 92, temp: 98.6 },
+        tier: "CRITICAL",
+        confidence: 94,
+        requires_clarification: false,
+        factors: [
+          { text: "Substernal chest compression with left arm radiation", impact: "+42%", weight: "w:0.428" },
+          { text: "Severe diaphoresis & borderline hypoxemia (SpO₂ 92%)", impact: "+26%", weight: "w:0.264" },
+          { text: "Tachycardia (118 bpm) with Stage 2 Hypertensive reading", impact: "+14%", weight: "w:0.141" }
+        ],
+        facility: {
+          name: "Metro Heart & Vascular Institute",
+          address: "District Center North Campus · 6.4 km away",
+          eta: 11,
+          icu: 4,
+          specialist: "Dr. Sunita Raman (Interventional Cardio)"
+        }
+      },
+      ambiguous: {
+        text: "42yo female presenting with non-specific epigastric discomfort, transient dizziness upon standing, and fatigue over the past 3 days. Denies fever or cough.",
+        vitals: { hr: 84, bp: "128/82", spo2: 98, temp: 98.4 },
+        tier: "UNCERTAIN",
+        confidence: 62,
+        requires_clarification: true,
+        factors: [
+          { text: "Atypical epigastric pain with orthostatic variance", impact: "+20%", weight: "w:0.210" },
+          { text: "Normotensive profile without clear focal infection markers", impact: "-15%", weight: "w:0.155" }
+        ],
+        facility: {
+          name: "District Community Polyclinic",
+          address: "Sector 9 Health Pavilion · 2.1 km away",
+          eta: 6,
+          icu: 2,
+          specialist: "Dr. Arvind Mehta (Internal Medicine)"
+        }
+      },
+      moderate: {
+        text: "8yo child with progressive expiratory wheezing, persistent dry cough for 2 days, history of mild childhood asthma. Alert and drinking fluids.",
+        vitals: { hr: 104, bp: "105/68", spo2: 95, temp: 99.1 },
+        tier: "MEDIUM",
+        confidence: 89,
+        requires_clarification: false,
+        factors: [
+          { text: "Audible bilateral expiratory wheezing on exertion", impact: "+34%", weight: "w:0.342" },
+          { text: "Known atopic history with sub-normal pediatric oxygenation", impact: "+22%", weight: "w:0.220" }
+        ],
+        facility: {
+          name: "Children's Regional Memorial Center",
+          address: "Civic Hospital Campus · 4.8 km away",
+          eta: 9,
+          icu: 3,
+          specialist: "Dr. Kavita Joshi (Pediatric Pulmonology)"
+        }
+      }
+    };
+
+    let activeScenarioKey = 'critical';
+    let currentTab = 'triage';
+
+    // Position and Glide the Neo-Glass Pill Slider
+    function updateGlassGlider(tabId) {
+      const targetBtn = document.getElementById('nav-btn-' + tabId);
+      const track = document.getElementById('nav-track');
+      const glider = document.getElementById('glass-glider');
+      
+      if (!targetBtn || !track || !glider) return;
+
+      const trackRect = track.getBoundingClientRect();
+      const btnRect = targetBtn.getBoundingClientRect();
+
+      const leftOffset = btnRect.left - trackRect.left;
+      const width = btnRect.width;
+
+      glider.style.transform = `translateX(${leftOffset}px)`;
+      glider.style.width = `${width}px`;
+
+      // Update text styles
+      ['triage', 'routing', 'accountability'].forEach(id => {
+        const btn = document.getElementById('nav-btn-' + id);
+        if (id === tabId) {
+          btn.className = 'relative z-10 px-4 sm:px-5 py-1.5 rounded-full text-xs font-semibold tracking-wide transition-colors duration-200 text-sand-900';
+        } else {
+          btn.className = 'relative z-10 px-4 sm:px-5 py-1.5 rounded-full text-xs font-medium tracking-wide transition-colors duration-200 text-sand-600 hover:text-sand-900';
+        }
+      });
+    }
+
+    function switchTab(tabId) {
+      currentTab = tabId;
+      
+      // Update glider position
+      updateGlassGlider(tabId);
+
+      // Toggle views with soft fade
+      ['triage', 'routing', 'accountability'].forEach(id => {
+        const view = document.getElementById('view-' + id);
+        if (id === tabId) {
+          view.classList.remove('hidden');
+          setTimeout(() => {
+            view.style.opacity = '1';
+            view.style.transform = 'translateY(0px)';
+          }, 10);
+        } else {
+          view.classList.add('hidden');
+          view.style.opacity = '0';
+          view.style.transform = 'translateY(6px)';
+        }
+      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function loadScenario(key) {
+      activeScenarioKey = key;
+      const sc = SCENARIOS[key];
+      document.getElementById('chief-complaint').value = sc.text;
+      document.getElementById('char-counter').textContent = sc.text.length + ' chars';
+      
+      document.getElementById('vital-hr').value = sc.vitals.hr;
+      document.getElementById('vital-bp').value = sc.vitals.bp;
+      document.getElementById('vital-spo2').value = sc.vitals.spo2;
+      document.getElementById('vital-temp').value = sc.vitals.temp;
+
+      updateVitalsPillColors();
+      showToast('Loaded preset: ' + key.toUpperCase() + ' case');
+    }
+
+    function updateVitalsPillColors() {
+      const hr = parseInt(document.getElementById('vital-hr').value);
+      const spo2 = parseInt(document.getElementById('vital-spo2').value);
+
+      // HR status
+      const hrStatus = document.getElementById('vital-hr-status');
+      if (hr > 100 || hr < 50) {
+        hrStatus.textContent = 'Elevated';
+        hrStatus.className = 'text-[10px] uppercase font-semibold text-terracotta-600 bg-terracotta-50/90 border border-terracotta-200/60 px-1.5 py-0.5 rounded-full';
+      } else {
+        hrStatus.textContent = 'Norm';
+        hrStatus.className = 'text-[10px] uppercase font-semibold text-emerald-600 bg-emerald-50/90 border border-emerald-200/60 px-1.5 py-0.5 rounded-full';
+      }
+
+      // SpO2 status
+      const spo2Status = document.getElementById('vital-spo2-status');
+      if (spo2 < 94) {
+        spo2Status.textContent = 'Hypoxic';
+        spo2Status.className = 'text-[10px] uppercase font-semibold text-terracotta-600 bg-terracotta-50/90 border border-terracotta-200/60 px-1.5 py-0.5 rounded-full';
+      } else {
+        spo2Status.textContent = 'Norm';
+        spo2Status.className = 'text-[10px] uppercase font-semibold text-emerald-600 bg-emerald-50/90 border border-emerald-200/60 px-1.5 py-0.5 rounded-full';
+      }
+    }
+
+    function evaluateTriage() {
+      const sc = SCENARIOS[activeScenarioKey];
+      
+      // If ambiguous, trigger Uncertainty Modal
+      if (sc.requires_clarification) {
+        openModal();
+        return;
+      }
+
+      applyRoutingData(sc);
+      switchTab('routing');
+      showToast('Triage evaluated with capacity optimization');
+    }
+
+    function applyRoutingData(sc) {
+      // Set Tier
+      const tierPill = document.getElementById('res-risk-tier-pill');
+      if (sc.tier === 'CRITICAL') {
+        tierPill.className = 'px-4 py-1.5 rounded-full text-xs font-semibold tracking-wider uppercase bg-red-100/90 text-red-700 border border-red-200/80 shadow-xs flex items-center gap-1.5 backdrop-blur-md';
+        tierPill.innerHTML = '<span class="w-2 h-2 rounded-full bg-red-600 animate-pulse"></span> CRITICAL RISK (TIER 1)';
+      } else if (sc.tier === 'HIGH') {
+        tierPill.className = 'px-4 py-1.5 rounded-full text-xs font-semibold tracking-wider uppercase bg-terracotta-100/90 text-terracotta-700 border border-terracotta-200/80 shadow-xs flex items-center gap-1.5 backdrop-blur-md';
+        tierPill.innerHTML = '<span class="w-2 h-2 rounded-full bg-terracotta-600"></span> HIGH RISK (TIER 2)';
+      } else {
+        tierPill.className = 'px-4 py-1.5 rounded-full text-xs font-semibold tracking-wider uppercase bg-amber-100/90 text-amber-800 border border-amber-200/80 shadow-xs flex items-center gap-1.5 backdrop-blur-md';
+        tierPill.innerHTML = '<span class="w-2 h-2 rounded-full bg-amber-600"></span> MODERATE TIER';
+      }
+
+      // Confidence
+      document.getElementById('confidence-num').textContent = sc.confidence + '%';
+      document.getElementById('confidence-circle').setAttribute('stroke-dasharray', `${sc.confidence}, 100`);
+
+      // Facility
+      document.getElementById('facility-name').textContent = sc.facility.name;
+      document.getElementById('facility-address').textContent = sc.facility.address;
+      document.getElementById('facility-eta').textContent = sc.facility.eta;
+      document.getElementById('facility-icu').textContent = sc.facility.icu;
+      document.getElementById('facility-specialist').textContent = sc.facility.specialist;
+
+      // Factors
+      const container = document.getElementById('factors-container');
+      container.innerHTML = '';
+      sc.factors.forEach(f => {
+        const div = document.createElement('div');
+        div.className = 'p-3.5 rounded-2xl bg-white/60 border border-white/90 shadow-xs flex items-start justify-between gap-3 backdrop-blur-sm';
+        div.innerHTML = `
+          <div class="flex items-start gap-2.5">
+            <span class="p-1 rounded-md bg-terracotta-100 text-terracotta-700 text-xs font-semibold mt-0.5">${f.impact}</span>
+            <div>
+              <div class="text-xs font-semibold text-sand-900">${f.text}</div>
+              <div class="text-[11px] text-sand-600">Statistical risk attribution weight</div>
+            </div>
+          </div>
+          <span class="text-[10px] text-sand-500 font-mono">${f.weight}</span>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    // Modal Handlers
+    function openModal() {
+      document.getElementById('modal-uncertainty').classList.remove('hidden');
+    }
+    function closeModal() {
+      document.getElementById('modal-uncertainty').classList.add('hidden');
+    }
+
+    function selectClarification(button, qIndex) {
+      document.querySelectorAll(`.clarify-pill-${qIndex}`).forEach(btn => {
+        btn.classList.remove('bg-sand-900', 'text-white', 'border-sand-900');
+        btn.classList.add('bg-white', 'text-sand-700');
+      });
+      button.classList.remove('bg-white', 'text-sand-700');
+      button.classList.add('bg-sand-900', 'text-white', 'border-sand-900');
+    }
+
+    function submitClarifications() {
+      closeModal();
+      const resolved = {
+        tier: "HIGH",
+        confidence: 88,
+        factors: [
+          { text: "Positional chest pain rule-out confirmed atypical angina", impact: "+32%", weight: "w:0.320" },
+          { text: "Prior vascular risk profile weighted affirmatively", impact: "+21%", weight: "w:0.215" }
+        ],
+        facility: {
+          name: "District Specialty Heart Pavilion",
+          address: "Sector 14 East Medical Wing · 3.8 km away",
+          eta: 8,
+          icu: 2,
+          specialist: "Dr. Ananya Ray (Acute Care Lead)"
+        }
+      };
+      applyRoutingData(resolved);
+      switchTab('routing');
+      showToast('Uncertainty resolved: Safe routing established');
+    }
+
+    function escalateToHumanLead() {
+      closeModal();
+      showToast('Case escalated to on-call Clinical Lead Dr. Sunita Raman');
+    }
+
+    function triggerDispatch() {
+      showToast('Ambulance dispatch & pre-arrival reservation ping transmitted!');
+    }
+
+    function confirmTransitReservation() {
+      showToast('Pre-Arrival Cath Lab slot held for 25 minutes.');
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      const toastMsg = document.getElementById('toast-message');
+      toastMsg.textContent = msg;
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+      setTimeout(() => {
+        toast.classList.add('translate-y-20', 'opacity-0');
+        toast.classList.remove('translate-y-0', 'opacity-100');
+      }, 3400);
+    }
+
+    // Initialize initial state & tab glider
+    window.addEventListener('load', () => {
+      updateGlassGlider('triage');
+      window.addEventListener('resize', () => updateGlassGlider(currentTab));
+      
+      const txt = document.getElementById('chief-complaint');
+      txt.addEventListener('input', (e) => {
+        document.getElementById('char-counter').textContent = e.target.value.length + ' chars';
+      });
+
+      ['vital-hr', 'vital-bp', 'vital-spo2', 'vital-temp'].forEach(id => {
+        document.getElementById(id).addEventListener('input', updateVitalsPillColors);
+      });
+    });
+  </script>
+</body></html>

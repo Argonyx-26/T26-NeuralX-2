@@ -37,7 +37,7 @@ Unlike standard tools that provide generic instructions to "go to a hospital," S
 * **Backend API:** FastAPI (Python 3.12)
 * **Core Logic & AI:** Deterministic Python Rule Engine (for risk scoring & confidence evaluation). LLM API (Claude via Anthropic Messages API) is used **strictly for extraction and explanations** — never for scoring.
 * **Data Storage & Logs:** SQLite
-* **Observability:** Raha — web analytics and network observability used to track API timing, Web Vitals, and error rates.
+* **Observability:** Raha (Free Version) — web analytics and network observability used to track Web Vitals on the frontend only. Due to cost constraints, there is no active backend API endpoint for Raha.
 
 ### Full System Architecture (Live Logic vs. Simulated Data)
 * **Live Logic:** Symptom & vitals input ➔ LLM extraction ➔ Rule-engine scoring ➔ Uncertainty check

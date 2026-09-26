@@ -14,7 +14,9 @@ import {
   Stethoscope,
   Building2,
   Clock,
-  ExternalLink
+  ExternalLink,
+  Search,
+  Sparkles
 } from 'lucide-react';
 import { Facility, TriageResponse } from '../types/triage';
 import { ReferralResultsCard } from './ReferralResultsCard';
@@ -35,14 +37,17 @@ interface HospitalGeo extends Facility {
 }
 
 const DISTRICT_HUBS = [
-  { id: 'custom-gps', name: 'Live Device GPS', lat: 12.9234, lng: 77.5814, isLiveGps: true, label: 'Live GPS Fix' },
-  { id: 'blr-hsr', name: 'Bengaluru (HSR / Silk Board)', lat: 12.9121, lng: 77.6446, label: 'HSR Layout' },
-  { id: 'blr-ecity', name: 'Bengaluru (Electronic City)', lat: 12.8452, lng: 77.6602, label: 'Electronic City' },
-  { id: 'blr-whitefield', name: 'Bengaluru (Whitefield / ITPL)', lat: 12.9698, lng: 77.7499, label: 'Whitefield' },
-  { id: 'blr-indiranagar', name: 'Bengaluru (Indiranagar / Domlur)', lat: 12.9784, lng: 77.6408, label: 'Indiranagar' },
-  { id: 'blr-jayanagar', name: 'Bengaluru (Jayanagar 4th Block)', lat: 12.9234, lng: 77.5814, label: 'Jayanagar' },
-  { id: 'delhi-saket', name: 'South Delhi (Saket Hub)', lat: 28.5244, lng: 77.2167, label: 'South Delhi' },
-  { id: 'delhi-cp', name: 'Central Delhi (Connaught Place)', lat: 28.6304, lng: 77.2177, label: 'Central Delhi' },
+  { id: 'custom-gps', name: 'Live Device GPS', lat: 12.9121, lng: 77.6446, isLiveGps: true, label: 'Live GPS Fix' },
+  { id: 'blr-koramangala', name: 'Koramangala (5th Block)', lat: 12.9352, lng: 77.6245, label: 'Koramangala' },
+  { id: 'blr-btm', name: 'BTM Layout (2nd Stage)', lat: 12.9166, lng: 77.6101, label: 'BTM Layout' },
+  { id: 'blr-hsr', name: 'HSR Layout (Silk Board)', lat: 12.9121, lng: 77.6446, label: 'HSR Layout' },
+  { id: 'blr-indiranagar', name: 'Indiranagar (100ft Rd)', lat: 12.9784, lng: 77.6408, label: 'Indiranagar' },
+  { id: 'blr-jayanagar', name: 'Jayanagar (4th Block)', lat: 12.9250, lng: 77.5938, label: 'Jayanagar' },
+  { id: 'blr-jpnagar', name: 'JP Nagar (Central)', lat: 12.9063, lng: 77.5857, label: 'JP Nagar' },
+  { id: 'blr-whitefield', name: 'Whitefield (ITPL)', lat: 12.9698, lng: 77.7499, label: 'Whitefield' },
+  { id: 'blr-ecity', name: 'Electronic City (Phase 1)', lat: 12.8452, lng: 77.6602, label: 'Electronic City' },
+  { id: 'delhi-saket', name: 'South Delhi (Saket)', lat: 28.5244, lng: 77.2167, label: 'South Delhi' },
+  { id: 'mumbai-bandra', name: 'Mumbai (Bandra West)', lat: 19.0596, lng: 72.8295, label: 'Bandra Mumbai' },
 ];
 
 function calculateHaversineDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
@@ -85,14 +90,34 @@ function buildNearestHospitalMesh(lat: number, lng: number, areaName: string): H
     hosp1Name = 'Sir C.V. Raman General District Hospital';
     hosp2Name = 'Chinmaya Mission Hospital & ICU';
     hosp3Name = 'Manipal Hospital (Old Airport Road)';
-  } else if (area.toLowerCase().includes('hsr') || area.toLowerCase().includes('koramangala')) {
+  } else if (area.toLowerCase().includes('koramangala')) {
     hosp1Name = "St. John's Medical College Hospital";
+    hosp2Name = 'Apollo Spectra Hospital Koramangala';
+    hosp3Name = 'Koramangala Comprehensive Trauma Centre';
+  } else if (area.toLowerCase().includes('btm')) {
+    hosp1Name = 'Jayashree Multi Speciality Hospital BTM';
+    hosp2Name = 'BTM Comprehensive Trauma & Critical Care';
+    hosp3Name = 'Fortis Hospital (Bannerghatta Corridor)';
+  } else if (area.toLowerCase().includes('jp nagar')) {
+    hosp1Name = 'Aster RV Hospital JP Nagar';
+    hosp2Name = 'Cloudnine Hospital & Emergency Care';
+    hosp3Name = 'Apollo Hospital Bannerghatta Road';
+  } else if (area.toLowerCase().includes('hsr')) {
+    hosp1Name = 'Narayana Multispeciality Hospital HSR';
     hosp2Name = 'Greenview Multi-Speciality Hospital';
-    hosp3Name = 'Narayana Multispeciality Hospital HSR';
+    hosp3Name = 'Apollo Clinic & Emergency HSR';
   } else if (area.toLowerCase().includes('jayanagar')) {
     hosp1Name = 'Jayanagar General District Hospital';
     hosp2Name = 'Sri Jayadeva National Cardiovascular Institute';
     hosp3Name = 'Victoria Hospital & Trauma Centre';
+  } else if (area.toLowerCase().includes('delhi')) {
+    hosp1Name = 'AIIMS Emergency Medicine & Trauma Centre';
+    hosp2Name = 'Max Super Speciality Hospital Saket';
+    hosp3Name = 'Safdarjung Hospital Emergency Care';
+  } else if (area.toLowerCase().includes('mumbai')) {
+    hosp1Name = 'Lilavati Hospital & Research Centre Bandra';
+    hosp2Name = 'KEM Hospital & Medical College';
+    hosp3Name = 'Bhabha Municipal General Hospital Bandra';
   }
 
   return [
@@ -199,19 +224,39 @@ export const CapacityRoutingView: React.FC<CapacityRoutingViewProps> = ({
 }) => {
   // Current user GPS / District state
   const [selectedHubId, setSelectedHubId] = useState<string>('custom-gps');
-  const [currentCoords, setCurrentCoords] = useState<{ lat: number; lng: number }>({
-    lat: 12.9121,
-    lng: 77.6446, // Default to dynamic South-East Bangalore
+  const [currentCoords, setCurrentCoords] = useState<{ lat: number; lng: number }>(() => {
+    try {
+      const saved = localStorage.getItem('setuhealth_last_coords');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed.lat && parsed.lng) return { lat: parsed.lat, lng: parsed.lng };
+      }
+    } catch (e) {}
+    return { lat: 12.9121, lng: 77.6446 };
   });
-  const [localityName, setLocalityName] = useState<string>('Bengaluru Urban');
+  const [localityName, setLocalityName] = useState<string>(() => {
+    try {
+      const saved = localStorage.getItem('setuhealth_last_coords');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed.locality) return parsed.locality;
+      }
+    } catch (e) {}
+    return 'HSR Layout';
+  });
   const [isGpsActive, setIsGpsActive] = useState<boolean>(false);
   const [gpsAccuracyMeters, setGpsAccuracyMeters] = useState<number | null>(null);
   const [gpsError, setGpsError] = useState<string | null>(null);
   const [isLocating, setIsLocating] = useState<boolean>(false);
 
+  // Search location state
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [isSearching, setIsSearching] = useState<boolean>(false);
+  const [searchFeedback, setSearchFeedback] = useState<string | null>(null);
+
   // Live Hospital Bed Matrix State
   const [facilities, setFacilities] = useState<HospitalGeo[]>(() =>
-    buildNearestHospitalMesh(12.9121, 77.6446, 'Bengaluru Urban')
+    buildNearestHospitalMesh(currentCoords.lat, currentCoords.lng, localityName)
   );
 
   // Live Bed Simulation Feed
@@ -221,69 +266,207 @@ export const CapacityRoutingView: React.FC<CapacityRoutingViewProps> = ({
 
   // Reverse geocode lat/lng to get real neighborhood name
   const resolveLocality = async (lat: number, lng: number): Promise<string> => {
+    // 1. Try BigDataCloud reverse geocode (fast, CORS-enabled, reliable)
     try {
-      const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=14`, {
-        headers: { 'Accept': 'application/json' },
-        signal: AbortSignal.timeout(3000)
-      });
+      const bdcRes = await fetch(
+        `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=en`,
+        { signal: AbortSignal.timeout(3500) }
+      );
+      if (bdcRes.ok) {
+        const data = await bdcRes.json();
+        const area = data.locality || data.city || data.principalSubdivision;
+        if (area && area.trim().length > 0 && area !== 'Unknown') {
+          setLocalityName(area.trim());
+          return area.trim();
+        }
+      }
+    } catch (e) {
+      // Continue to next provider
+    }
+
+    // 2. Try OpenStreetMap Nominatim reverse geocode with User-Agent header
+    try {
+      const res = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=16`,
+        {
+          headers: { 'Accept': 'application/json', 'User-Agent': 'SetuHealth-Triage/1.0' },
+          signal: AbortSignal.timeout(5000)
+        }
+      );
       if (res.ok) {
         const data = await res.json();
         const addr = data.address || {};
-        const area = addr.suburb || addr.neighbourhood || addr.city_district || addr.residential || addr.quarter || addr.town || addr.village || addr.city || 'Local Sector';
+        const area =
+          data.name ||
+          (data.display_name ? data.display_name.split(',')[0].trim() : '') ||
+          addr.neighbourhood ||
+          addr.suburb ||
+          addr.residential ||
+          addr.quarter ||
+          addr.city_district ||
+          addr.town ||
+          addr.city ||
+          'Local Sector';
+
         setLocalityName(area);
         return area;
       }
     } catch (e) {
-      // Fallback: estimate from coordinates
-      if (Math.abs(lat - 12.845) < 0.06 && Math.abs(lng - 77.660) < 0.06) return 'Electronic City';
-      if (Math.abs(lat - 12.970) < 0.06 && Math.abs(lng - 77.750) < 0.06) return 'Whitefield';
-      if (Math.abs(lat - 12.912) < 0.06 && Math.abs(lng - 77.644) < 0.06) return 'HSR Layout';
-      if (Math.abs(lat - 12.978) < 0.06 && Math.abs(lng - 77.640) < 0.06) return 'Indiranagar';
-      if (Math.abs(lat - 12.923) < 0.06 && Math.abs(lng - 77.581) < 0.06) return 'Jayanagar';
-      if (Math.abs(lat - 12.97) < 0.8 && Math.abs(lng - 77.59) < 0.8) return 'Bengaluru Urban';
-      if (Math.abs(lat - 28.6) < 0.8 && Math.abs(lng - 77.2) < 0.8) return 'Delhi NCR';
+      // Continue to coordinate fallback
     }
-    return localityName || 'Local Sector';
+
+    // 3. Fallback: estimate from coordinates
+    let fallbackArea = 'Local Sector';
+    if (Math.abs(lat - 12.935) < 0.03 && Math.abs(lng - 77.624) < 0.03) fallbackArea = 'Koramangala';
+    else if (Math.abs(lat - 12.916) < 0.03 && Math.abs(lng - 77.610) < 0.03) fallbackArea = 'BTM Layout';
+    else if (Math.abs(lat - 12.912) < 0.03 && Math.abs(lng - 77.644) < 0.03) fallbackArea = 'HSR Layout';
+    else if (Math.abs(lat - 12.978) < 0.03 && Math.abs(lng - 77.640) < 0.03) fallbackArea = 'Indiranagar';
+    else if (Math.abs(lat - 12.923) < 0.03 && Math.abs(lng - 77.581) < 0.03) fallbackArea = 'Jayanagar';
+    else if (Math.abs(lat - 12.906) < 0.03 && Math.abs(lng - 77.585) < 0.03) fallbackArea = 'JP Nagar';
+    else if (Math.abs(lat - 12.970) < 0.06 && Math.abs(lng - 77.750) < 0.06) fallbackArea = 'Whitefield';
+    else if (Math.abs(lat - 12.845) < 0.06 && Math.abs(lng - 77.660) < 0.06) fallbackArea = 'Electronic City';
+    else if (Math.abs(lat - 12.97) < 0.5 && Math.abs(lng - 77.59) < 0.5) fallbackArea = 'Bengaluru Urban';
+    else if (Math.abs(lat - 28.6) < 0.5 && Math.abs(lng - 77.2) < 0.5) fallbackArea = 'Delhi NCR';
+
+    setLocalityName(fallbackArea);
+    return fallbackArea;
   };
 
-  // Trigger GPS detection
+  // Helper to commit position
+  const applyCoordinates = async (lat: number, lng: number, accuracy: number, source: string) => {
+    const coords = {
+      lat: Number(lat.toFixed(4)),
+      lng: Number(lng.toFixed(4)),
+    };
+    setCurrentCoords(coords);
+    setSelectedHubId('custom-gps');
+    setIsGpsActive(true);
+    setGpsAccuracyMeters(Math.round(accuracy));
+    setIsLocating(false);
+
+    const detectedArea = await resolveLocality(coords.lat, coords.lng);
+
+    try {
+      localStorage.setItem(
+        'setuhealth_last_coords',
+        JSON.stringify({ lat: coords.lat, lng: coords.lng, locality: detectedArea })
+      );
+    } catch (e) {}
+
+    raahClient.recordEvent(
+      'FACILITY_ROUTED',
+      source,
+      'SYS-LOC',
+      `Live GPS fixed at ${coords.lat}, ${coords.lng} (${detectedArea}) (Accuracy: ±${Math.round(accuracy)}m)`,
+      { lat: coords.lat, lng: coords.lng, locality: detectedArea }
+    );
+  };
+
+  // Fallback to IP geolocation
+  const fetchIpLocation = async () => {
+    try {
+      const res = await fetch('https://api.bigdatacloud.net/data/reverse-geocode-client', {
+        signal: AbortSignal.timeout(4000),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.latitude && data.longitude) {
+          await applyCoordinates(data.latitude, data.longitude, 2500, 'IP-GEOLOCATION');
+          return;
+        }
+      }
+    } catch (e) {}
+
+    setIsLocating(false);
+    setGpsError('Could not auto-detect physical location. Please use the search bar below or select a neighborhood hub.');
+  };
+
+  // Trigger GPS detection with multi-tier fallback
   const handleDetectGPS = () => {
+    setIsLocating(true);
+    setGpsError(null);
+    setSearchFeedback(null);
+
     if (!navigator.geolocation) {
-      setGpsError('Geolocation is not supported by your browser.');
+      fetchIpLocation();
       return;
     }
 
-    setIsLocating(true);
-    setGpsError(null);
+    // Step 1: Try browser geolocation
     navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        setIsLocating(false);
-        const coords = {
-          lat: Number(position.coords.latitude.toFixed(4)),
-          lng: Number(position.coords.longitude.toFixed(4)),
-        };
-        setCurrentCoords(coords);
-        setSelectedHubId('custom-gps');
-        setIsGpsActive(true);
-        setGpsAccuracyMeters(Math.round(position.coords.accuracy));
-
-        const detectedArea = await resolveLocality(coords.lat, coords.lng);
-
-        raahClient.recordEvent(
-          'FACILITY_ROUTED',
-          'GPS-SENSOR',
-          'SYS-LOC',
-          `Live GPS fixed at ${coords.lat}, ${coords.lng} (${detectedArea}) (Accuracy: ±${Math.round(position.coords.accuracy)}m)`,
-          { lat: coords.lat, lng: coords.lng, locality: detectedArea }
+      (position) => {
+        applyCoordinates(position.coords.latitude, position.coords.longitude, position.coords.accuracy, 'GPS-SENSOR');
+      },
+      (err) => {
+        console.warn('High accuracy geolocation timed out/denied, trying low accuracy network fix:', err);
+        // Step 2: Try network/WiFi geolocation (lower accuracy, but works on laptops without GPS hardware)
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            applyCoordinates(position.coords.latitude, position.coords.longitude, position.coords.accuracy, 'WIFI-TRIANGULATION');
+          },
+          (err2) => {
+            console.warn('Network geolocation failed, falling back to IP geolocation:', err2);
+            // Step 3: IP geolocation fallback
+            fetchIpLocation();
+          },
+          { enableHighAccuracy: false, timeout: 6000, maximumAge: 60000 }
         );
       },
-      (error) => {
-        setIsLocating(false);
-        setGpsError('GPS permission was denied or timed out. Switched to fallback local mesh.');
-        setIsGpsActive(false);
-      },
-      { enableHighAccuracy: true, timeout: 8000 }
+      { enableHighAccuracy: true, timeout: 5000, maximumAge: 30000 }
     );
+  };
+
+  // Interactive location search handler
+  const handleSearchLocation = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    const query = searchQuery.trim();
+    if (!query) return;
+
+    setIsSearching(true);
+    setSearchFeedback(null);
+    setGpsError(null);
+
+    try {
+      const res = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1`,
+        {
+          headers: { 'Accept': 'application/json', 'User-Agent': 'SetuHealth-Triage/1.0' },
+          signal: AbortSignal.timeout(6000),
+        }
+      );
+
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data) && data.length > 0) {
+          const lat = Number(parseFloat(data[0].lat).toFixed(4));
+          const lng = Number(parseFloat(data[0].lon).toFixed(4));
+          const rawName = data[0].name || (data[0].display_name ? data[0].display_name.split(',')[0].trim() : query);
+          const cleanArea = rawName.length > 28 ? rawName.slice(0, 28) + '...' : rawName;
+
+          setCurrentCoords({ lat, lng });
+          setLocalityName(cleanArea);
+          setSelectedHubId('custom-search');
+          setIsGpsActive(false);
+          setGpsAccuracyMeters(null);
+          setSearchFeedback(`Location centered on: ${cleanArea}`);
+
+          try {
+            localStorage.setItem(
+              'setuhealth_last_coords',
+              JSON.stringify({ lat, lng, locality: cleanArea })
+            );
+          } catch (err) {}
+
+          setIsSearching(false);
+          return;
+        }
+      }
+      setSearchFeedback(`Could not locate "${query}". Please try a nearby landmark or select from the chips.`);
+    } catch (err) {
+      setSearchFeedback('Search connection timed out. Please click a neighborhood chip below.');
+    } finally {
+      setIsSearching(false);
+    }
   };
 
   // Auto-attempt GPS on first mount
@@ -294,11 +477,18 @@ export const CapacityRoutingView: React.FC<CapacityRoutingViewProps> = ({
   // Switch District Hub
   const handleHubSelect = (hubId: string) => {
     setSelectedHubId(hubId);
+    setSearchFeedback(null);
+    setGpsError(null);
+    if (hubId === 'custom-gps') {
+      handleDetectGPS();
+      return;
+    }
     const hub = DISTRICT_HUBS.find((h) => h.id === hubId);
     if (hub) {
       setCurrentCoords({ lat: hub.lat, lng: hub.lng });
       setLocalityName(hub.label || 'Local Sector');
       setIsGpsActive(Boolean(hub.isLiveGps));
+      setGpsAccuracyMeters(null);
     }
   };
 
@@ -449,7 +639,7 @@ export const CapacityRoutingView: React.FC<CapacityRoutingViewProps> = ({
         </div>
 
         {/* Live Location Selector Bar */}
-        <div className="space-y-3">
+        <div className="space-y-3.5">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <span className="text-[11px] font-semibold text-sand-700 uppercase tracking-wider flex items-center gap-1.5">
               <MapPin className="w-3.5 h-3.5 text-terracotta-500" />
@@ -462,16 +652,47 @@ export const CapacityRoutingView: React.FC<CapacityRoutingViewProps> = ({
               className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-sand-900 text-white text-xs font-medium hover:bg-sand-800 transition-all shadow-xs bronze-glow cursor-pointer disabled:opacity-60"
             >
               <Navigation className={`w-3.5 h-3.5 text-terracotta-400 ${isLocating ? 'animate-spin' : ''}`} />
-              <span>{isLocating ? 'Fixing Satellites...' : 'Use My Live GPS'}</span>
+              <span>{isLocating ? 'Detecting Physical GPS...' : 'Use My Live GPS'}</span>
             </button>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2 pt-1">
+          {/* Interactive Search Bar to Set Any Exact Location */}
+          <form onSubmit={handleSearchLocation} className="flex gap-2 pt-0.5">
+            <div className="relative flex-1 group">
+              <Search className="w-4 h-4 text-sand-400 absolute left-3.5 top-1/2 -translate-y-1/2 group-focus-within:text-sand-700 transition-colors" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search any exact area or landmark (e.g., Koramangala, BTM, Indiranagar, Mumbai, Delhi)..."
+                className="w-full pl-10 pr-4 py-2 text-xs rounded-xl bg-white/80 border border-sand-300/80 focus:border-sand-700 focus:bg-white outline-none text-sand-900 shadow-inner transition-all placeholder:text-sand-400"
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={isSearching || !searchQuery.trim()}
+              className="px-4 py-2 rounded-xl bg-sand-800 hover:bg-sand-900 text-white text-xs font-semibold transition-all shadow-xs cursor-pointer disabled:opacity-40 flex items-center gap-1.5"
+            >
+              {isSearching ? <span className="animate-spin text-xs">⟳</span> : <Search className="w-3.5 h-3.5 text-sand-200" />}
+              <span>{isSearching ? 'Finding...' : 'Set Area'}</span>
+            </button>
+          </form>
+
+          {searchFeedback && (
+            <div className="text-[11px] text-emerald-800 font-medium px-1 flex items-center gap-1.5">
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+              <span>{searchFeedback}</span>
+            </div>
+          )}
+
+          {/* Quick Hub Chips */}
+          <div className="flex flex-wrap items-center gap-1.5 pt-1">
+            <span className="text-[11px] text-sand-500 font-medium mr-1">Quick Hubs:</span>
             {DISTRICT_HUBS.map((hub) => (
               <button
                 key={hub.id}
                 onClick={() => handleHubSelect(hub.id)}
-                className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition-all shadow-xs flex items-center gap-1.5 cursor-pointer ${
+                className={`px-3 py-1 rounded-full text-xs font-medium transition-all shadow-xs flex items-center gap-1.5 cursor-pointer ${
                   selectedHubId === hub.id
                     ? 'bg-white text-sand-900 border-sand-500 font-semibold shadow-sm'
                     : 'neo-glass-pill text-sand-700 hover:text-sand-900'
@@ -484,14 +705,18 @@ export const CapacityRoutingView: React.FC<CapacityRoutingViewProps> = ({
           </div>
 
           {/* GPS Coordinates Feedback */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 text-[11px] text-sand-600 bg-white/60 p-3 rounded-xl border border-white/80 font-mono">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 text-[11px] text-sand-600 bg-white/70 p-3 rounded-xl border border-white/90 font-mono shadow-2xs">
             <span>
-              Origin Fix: <span className="text-sand-900 font-bold">{currentCoords.lat}° N, {currentCoords.lng}° E</span>
-              {gpsAccuracyMeters && <span className="text-emerald-700 ml-2">(Accuracy: ±{gpsAccuracyMeters}m)</span>}
+              Origin: <span className="text-sand-900 font-bold">{currentCoords.lat}° N, {currentCoords.lng}° E</span>
+              {gpsAccuracyMeters ? (
+                <span className="text-emerald-700 ml-2 font-sans font-medium">(Sensor Accuracy: ±{gpsAccuracyMeters}m)</span>
+              ) : (
+                <span className="text-sand-500 ml-2 font-sans">(Custom Selected Location)</span>
+              )}
             </span>
             <span className="text-sand-800 font-sans font-medium flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-              <span>Active Neighborhood: <strong>{localityName}</strong> (Hospitals &lt; 5.5 km)</span>
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span>Active Neighborhood: <strong className="text-sand-950 underline decoration-sand-400">{localityName}</strong> (All 5 Hospitals &lt; 5.2 km)</span>
             </span>
           </div>
 

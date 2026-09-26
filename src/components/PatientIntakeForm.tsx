@@ -92,9 +92,12 @@ export const PatientIntakeForm: React.FC<PatientIntakeFormProps> = ({
     }
     onSubmit({
       chief_complaint: complaint,
-      duration_hours: durationHours,
+      duration_hours: durationHours > 0 ? durationHours : 1,
       vitals,
-      history
+      history: {
+        ...history,
+        age: history.age > 0 ? history.age : 50
+      }
     });
   };
 
@@ -222,9 +225,10 @@ export const PatientIntakeForm: React.FC<PatientIntakeFormProps> = ({
                     type="number"
                     min={1}
                     max={120}
-                    value={history.age}
+                    step={1}
+                    value={history.age === 0 ? '' : history.age}
                     onChange={(e) => {
-                      const val = parseInt(e.target.value);
+                      const val = parseInt(e.target.value, 10);
                       setHistory((prev) => ({ ...prev, age: isNaN(val) ? 0 : val }));
                     }}
                     className="w-12 px-1 py-0.5 text-center font-bold text-sand-900 bg-white/90 rounded border border-sand-300/70 focus:border-sand-600 focus:bg-white focus:ring-1 focus:ring-sand-400/40 outline-none font-mono text-xs shadow-inner"
@@ -261,17 +265,17 @@ export const PatientIntakeForm: React.FC<PatientIntakeFormProps> = ({
                   </div>
                 </div>
 
-                {/* Onset Input */}
+                {/* Onset Input (Clean 1-hour steps, standard integers: 1h, 2h, 48h) */}
                 <div className="inline-flex items-center gap-1.5 bg-sand-200/50 hover:bg-sand-200/80 px-2.5 py-1 rounded-xl border border-sand-300/60 shadow-2xs transition-all">
                   <span className="text-sand-600 font-medium text-[11px]">Onset:</span>
                   <input
                     type="number"
-                    min={0.1}
+                    min={1}
                     max={168}
-                    step={0.5}
-                    value={durationHours}
+                    step={1}
+                    value={durationHours === 0 ? '' : durationHours}
                     onChange={(e) => {
-                      const val = parseFloat(e.target.value);
+                      const val = parseInt(e.target.value, 10);
                       setDurationHours(isNaN(val) ? 0 : val);
                     }}
                     className="w-12 px-1 py-0.5 text-center font-bold text-sand-900 bg-white/90 rounded border border-sand-300/70 focus:border-sand-600 focus:bg-white focus:ring-1 focus:ring-sand-400/40 outline-none font-mono text-xs shadow-inner"

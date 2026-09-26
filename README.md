@@ -186,7 +186,8 @@ POST /api/route → Weighted facility ranking → recommended facility
 
 ## 📚 References
 1. **National Early Warning Score 2 (NEWS2)** — Royal College of Physicians, endorsed by NHS England. Foundation for our risk-scoring structure.
-2. Tahermazandarani, M. et al. *"When Confidence Fails: Overconfidence in LLMs under Uncertainty and Missing Clinical Information."* arXiv (2026).
+2. Tahermazandarani, M. et al. *"When Confidence Fails: Overconfidence in LLMs under Uncertainty and Missing Clinical Information."* arXiv:2608.09080 (2026).
 3. Mass General Brigham / JAMA Network Open (Apr 2026) — LLMs: 90%+ accurate with complete data, 80%+ failure rate on differential diagnosis with incomplete data.
-4. BMJ Open (Ada Health-led comparative study) — 8 symptom checker apps: average 38% diagnostic accuracy vs. 82% for human GPs.
-5. **Ayushman Bharat Digital Mission (ABDM)** — Government of India digital health infrastructure, our stated integration path.
+4. **Ayushman Bharat Digital Mission (ABDM)** — Government of India digital health infrastructure, our stated integration path.
+5. Anthropic Claude — LLM API used for symptom extraction and clarifying-question generation (not used for risk scoring).
+6. Raha — web analytics and network observability platform, used to measure and verify API timing and latency benchmarks reported in this deck.
